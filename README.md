@@ -12,6 +12,10 @@ This repository contains Python code files, unit tests, and test data for a Pyth
 
 At the time of writing, only the arithmetical calendars described in the RDM editions are implemented and tested. The astronomical calendars are coming soon. Additional calendars introduced in RDU will be added in a later version. Implementations for other programming languages (such as C#, PHP, C++) are planned for some more distant future.
 
+## Contribution
+
+Anybody who would like to collaborate is welcome. Please be so kind, however, to inform me by email before you make changes, thanks.
+
 ## References
 
 1. Reingold, Edward M., and Nachum Dershowitz. Calendrical Calculations. 2nd edition. Cambridge, UK ; New York: Cambridge University Press, 2001. ISBN 978-0-521-77167-2. 
