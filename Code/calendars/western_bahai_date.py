@@ -116,7 +116,7 @@ class WesternBahaiDate(AbstractDate):
         if self.month == 0:  # Ayyám-i-Há
             t += 342
         elif self.month == 19:
-            if tools.is_leap_gregorian_year(gregorian_year + 1):
+            if tools.is_gregorian_leap_year(gregorian_year + 1):
                 t += 347
             else:
                 t += 346
@@ -154,7 +154,7 @@ class WesternBahaiDate(AbstractDate):
 
         start_ayyam_i_ha = WesternBahaiDate(self.major, self.cycle, self.year, 0, 1).to_moment()
         end_ayyam_i_ha = start_ayyam_i_ha + 4
-        if tools.is_leap_gregorian_year(gregorian_year):
+        if tools.is_gregorian_leap_year(gregorian_year):
             end_ayyam_i_ha += 1
 
         if t >= WesternBahaiDate(self.major, self.cycle, self.year, 19, 1).to_moment():

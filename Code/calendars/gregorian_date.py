@@ -86,7 +86,7 @@ class GregorianDate(AbstractDate):
 
         march1 = GregorianDate(self.year, 3, 1)
         if t >= march1.to_moment():
-            if tools.is_leap_gregorian_year(self.year):
+            if tools.is_gregorian_leap_year(self.year):
                 correction = 1
             else:
                 correction = 2
@@ -110,7 +110,7 @@ class GregorianDate(AbstractDate):
 
         days_in_month = GregorianDate.DAYS_IN_MONTH[self.month - 1]
 
-        if self.month == 2 and tools.is_leap_gregorian_year(self.year):
+        if self.month == 2 and tools.is_gregorian_leap_year(self.year):
             days_in_month += 1
 
         return 0 < self.day <= days_in_month
@@ -132,7 +132,7 @@ class GregorianDate(AbstractDate):
         for i in range(self.month - 1):
             s += GregorianDate.DAYS_IN_MONTH[i]
 
-        if tools.is_leap_gregorian_year(self.year) and self.month > 2:
+        if tools.is_gregorian_leap_year(self.year) and self.month > 2:
             s += 1
 
         return s + self.day

@@ -7,7 +7,7 @@ import tools
 @dataclass
 class ArmenianDate(AbstractDate):
     """
-    Implements conversion to and from RD time moment for Armenian calendar.
+    Implements conversion to and from RD time moment for Armenian calendar (RDM 1.9, p. 25).
     """
 
     # region Data Fields
@@ -22,7 +22,7 @@ class ArmenianDate(AbstractDate):
         """
         Initialization
         :param year: Armenian year.
-        :param month: Armenian month
+        :param month: Armenian month.
         :param day: Armenian day.
         """
         self.year = year
@@ -33,20 +33,20 @@ class ArmenianDate(AbstractDate):
         """
         Converts the Armenian date to an RD time moment.
         :return: The RD time moment.
-        RDM (1.40)
+        RDM (1.30)
         """
         return ArmenianDate.EPOCH + EgyptianDate(self.year, self.month, self.day).to_moment() - EgyptianDate.EPOCH
 
     def from_moment(self, t: float):
         """
-        Converts an RD time moment to a Egyptian date.
+        Converts an RD time moment to an Armenian date.
         :param t: The RD time moment to convert.
-        :return: None. The instance of EgyptianDate will be generated instead.
-        RDM (1.41)
+        :return: None. The instance of ArmenianDate is generated instead.
+        RDM (1.31)
         """
-        egyptian = EgyptianDate()
-        egyptian.from_moment(t + EgyptianDate.EPOCH - ArmenianDate.EPOCH)
+        armenian = EgyptianDate()
+        armenian.from_moment(t + EgyptianDate.EPOCH - ArmenianDate.EPOCH)
 
-        self.year = egyptian.year
-        self.month = egyptian.month
-        self.day = egyptian.day
+        self.year = armenian.year
+        self.month = armenian.month
+        self.day = armenian.day

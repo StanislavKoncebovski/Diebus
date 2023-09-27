@@ -38,7 +38,7 @@ class JulianDate(AbstractDate):
         result = JulianDate.EPOCH - 1 + 365 * (y - 1) + math.floor((y - 1) / 4)
         result += math.floor((367 * self.month - 362) / 12)
         if self.month > 2:
-            result += -1 if tools.is_leap_julian_year(self.year) else -2
+            result += -1 if tools.is_julian_leap_year(self.year) else -2
         result += self.day
 
         return result
@@ -60,7 +60,7 @@ class JulianDate(AbstractDate):
         if t < JulianDate(self.year, 3, 1).to_moment():
             correction = 0
 
-        if t >= JulianDate(self.year, 3, 1).to_moment() and tools.is_leap_julian_year(self.year):
+        if t >= JulianDate(self.year, 3, 1).to_moment() and tools.is_julian_leap_year(self.year):
             correction = 1
 
         self.month = int(math.floor((12 * (prior_days + correction) + 373) / 367))
@@ -87,5 +87,3 @@ class JulianDate(AbstractDate):
                 return super().to_string()
     # endregion
 
-if __name__ == '__main__':
-    balinese_epoch =

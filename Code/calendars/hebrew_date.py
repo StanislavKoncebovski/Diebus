@@ -133,7 +133,7 @@ class HebrewDate(AbstractDate):
         :param year:
         :return:
         """
-        if tools.is_leap_hebrew_year(year):
+        if tools.is_hebrew_leap_year(year):
             return 13
         else:
             return 12
@@ -146,7 +146,7 @@ class HebrewDate(AbstractDate):
         :return:
         """
         if month in HebrewDate.CRITICAL_MONTHS or \
-                (month == 12 and not tools.is_leap_hebrew_year(year)) or \
+                (month == 12 and not tools.is_hebrew_leap_year(year)) or \
                 (month == 8 and not self.is_long_mareshvan(year)) or \
                 (month == 9 and self.is_short_kislev(year)):
             return 29

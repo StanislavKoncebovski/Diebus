@@ -3,10 +3,11 @@ from dataclasses import dataclass
 import math
 import tools
 
+
 @dataclass
 class ArithmeticPersianDate(AbstractDate):
     """
-    Implements conversion to and from RD time moment for Arithmetic Persian calendar.
+    Implements conversion to and from RD time moment for Arithmetic Persian calendar (RDM 13.3, p. 215).
     """
 
     # region Data Fields
@@ -19,10 +20,10 @@ class ArithmeticPersianDate(AbstractDate):
 
     def __init__(self, year: int = 0, month: int = 0, day: int = 0):
         """
-        Initialization
-        :param year: Armenian year.
-        :param month: Armenian month
-        :param day: Armenian day.
+        Initialization.
+        :param year: Arithmetic Persian year.
+        :param month: Arithmetic Persian month
+        :param day: Arithmetic Persian day.
         """
         self.year = year
         self.month = month
@@ -30,7 +31,7 @@ class ArithmeticPersianDate(AbstractDate):
 
     def to_moment(self) -> float:
         """
-        Converts the Arithmetic Persian date to an RD time moment.
+        Converts an Arithmetic Persian date to an RD time moment.
         :return: The RD time moment.
         RDM (13.8)
         """
@@ -56,7 +57,7 @@ class ArithmeticPersianDate(AbstractDate):
         """
         Converts an RD time moment to a Arithmetic Persian date.
         :param t: The RD time moment to convert.
-        :return: None. The instance of ArithmeticPersianDate will be generated instead.
+        :return: None. The instance of ArithmeticPersianDate is generated instead.
         RDM (13.9, 10)
         """
         self.year = self._year_from_fixed(t)
@@ -68,6 +69,7 @@ class ArithmeticPersianDate(AbstractDate):
 
         self.day = int(t - ArithmeticPersianDate(self.year, self.month, 1).to_moment() + 1)
 
+    # region Protected Auxiliary
     def _year_from_fixed(self, t: float) -> int:
         """
         Converts an RD time moment to an Arithmetic Persian date.
@@ -89,3 +91,4 @@ class ArithmeticPersianDate(AbstractDate):
             return year
         else:
             return year - 1
+    # endregion

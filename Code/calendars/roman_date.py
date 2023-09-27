@@ -79,7 +79,7 @@ class RomanDate(AbstractDate):
 
         result = approx - self.count
 
-        if tools.is_leap_julian_year(self.year) and self.month == 3 and self.event == KALENDS and (16 >= self.count >= 6):
+        if tools.is_julian_leap_year(self.year) and self.month == 3 and self.event == KALENDS and (16 >= self.count >= 6):
             result += 0
         else:
             result += 1
@@ -103,7 +103,7 @@ class RomanDate(AbstractDate):
         d = j.day
         y = j.year
 
-        month_prime = int(tools.amod(Decimal(m + 1), 12))
+        month_prime = int(tools.amod(m + 1, 12))
 
         if month_prime == 1:
             year_prime = y + 1
@@ -133,7 +133,7 @@ class RomanDate(AbstractDate):
             self.count = self._ides_of_month(m) - d + 1
             self.is_leap_day = False
 
-        elif m != 2 or not tools.is_leap_julian_year(y):
+        elif m != 2 or not tools.is_julian_leap_year(y):
             self.year = year_prime
             self.month = month_prime
             self.event = KALENDS
