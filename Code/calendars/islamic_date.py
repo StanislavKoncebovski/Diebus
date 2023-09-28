@@ -21,7 +21,7 @@ class IslamicDate(AbstractDate):
 
     def __init__(self, year: int = 0, month: int = 0, day: int = 0):
         """
-        Initialization
+        Initialization.
         :param year: Islamic year.
         :param month: Islamic month
         :param day: Islamic day.
@@ -45,7 +45,7 @@ class IslamicDate(AbstractDate):
         """
         Converts an RD time moment to an Islamic date.
         :param t: The RD time moment to convert.
-        :return: None. The instance of IslamicDate will be generated instead.
+        :return: None. The instance of IslamicDate is generated instead.
         RDM (6.4)
         """
         year = math.floor((30 * (t - tools.ISLAMIC_EPOCH) + 10646) / 10631)

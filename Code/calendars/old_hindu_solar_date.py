@@ -23,7 +23,7 @@ class OldHinduSolarDate(AbstractDate):
 
     def __init__(self, year: int = 0, month: int = 0, day: int = 0):
         """
-        Initialization
+        Initialization.
         :param year: Old Hindu Solar year.
         :param month: Old Hindu Solar month
         :param day: Old Hindu Solar day.
@@ -36,7 +36,7 @@ class OldHinduSolarDate(AbstractDate):
         """
         Converts the Old Hindu Solar date to an RD time moment.
         :return: The RD time moment.
-        RDM (9.7)
+        RDM (9.7).
         """
         result = OldHinduSolarDate.EPOCH + self.year * OldHinduSolarDate.ARYA_SOLAR_YEAR + \
                  (self.month - 1) * OldHinduSolarDate.ARYA_SOLAR_MONTH + self.day - 0.25
@@ -48,7 +48,7 @@ class OldHinduSolarDate(AbstractDate):
         Converts an RD time moment to an Old Hindu Solar date.
         :param t: The RD time moment to convert.
         :return: None. The instance of OldHinduSolarDate will be generated instead.
-        RDM (9.8)
+        RDM (9.8).
         """
         sun = (t - OldHinduSolarDate.EPOCH) + 0.25
         year = math.floor(sun / OldHinduSolarDate.ARYA_SOLAR_YEAR)

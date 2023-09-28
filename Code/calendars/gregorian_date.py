@@ -5,7 +5,11 @@ import tools
 
 
 class GregorianDate:
+    """
+    Preliminary declaration.
+    """
     pass
+
 
 @dataclass
 class GregorianDate(AbstractDate):
@@ -145,7 +149,7 @@ class GregorianDate(AbstractDate):
         pass
 
     # region String representation
-    def to_string(self, format: str = None) -> str:
+    def to_string(self, format_string: str = None) -> str:
         """
         Formatting options (format is case-insensitive):
         "iso": ISO format ('1996-02-25')
@@ -155,7 +159,7 @@ class GregorianDate(AbstractDate):
         "wdmy": 'day of week-day-month-year' (Sunday, 25 February 1996).
         Only English names of months and days of week are supported.
         """
-        match(format.lower()):
+        match (format_string.lower()):
             case "iso":
                 return f"{self.year}-{self.month}-{self.day}"
             case "ymd":
@@ -166,7 +170,6 @@ class GregorianDate(AbstractDate):
                 return f"{self.year} {GregorianDate.MONTHS[self.month - 1]} {self.day}, {self.day_of_week}"
             case "wdmy":
                 return f"{self.day_of_week}, {self.year} {GregorianDate.MONTHS[self.month - 1]} {self.day}"
-            case _ :
+            case _:
                 return super().to_string()
     # endregion
-

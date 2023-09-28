@@ -32,7 +32,7 @@ class MayanHaabDate(AbstractDate):
         """
         Converts an RD time moment to a Mayan Haab date.
         :param t: The RD time moment to convert.
-        :return: None. The instance of MayanHaabDate will be generated instead.
+        :return: None. The instance of MayanHaabDate is generated instead.
         RDM (10.6)
         """
         count = tools.fmod(t - MayanHaabDate.EPOCH, 365)

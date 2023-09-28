@@ -35,7 +35,7 @@ class HebrewDate(AbstractDate):
         """
         Converts the Hebrew date to an RD time moment.
         :return: The RD time moment.
-        RDM (?)
+        RDM (7.15)
         """
         t = self.hebrew_new_year(self.year) + self.day - 1
 
@@ -59,6 +59,7 @@ class HebrewDate(AbstractDate):
     def from_moment(self, t: float):
         """
         Converts an RD time moment to a Hebrew date.
+        RDM (7.16).
         :param t: The RD time moment to convert.
         :return: None. The instance of HebrewDate will be generated instead.
         """
@@ -182,14 +183,3 @@ class HebrewDate(AbstractDate):
         return self.hebrew_new_year(year + 1) - self.hebrew_new_year(year)
     # endregion
 
-
-if __name__ == '__main__':
-    year = 3593
-    month = 9
-    day = 25
-
-    hebrew = HebrewDate(year, month, day)
-
-    t = hebrew.to_moment()
-
-    print(t)

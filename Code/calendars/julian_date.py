@@ -20,7 +20,7 @@ class JulianDate(AbstractDate):
 
     def __init__(self, year: int = 0, month: int = 0, day: int = 0):
         """
-        Initialization
+        Initialization.
         :param year: Julian year.
         :param month: Julian month
         :param day: Julian day.
@@ -32,6 +32,7 @@ class JulianDate(AbstractDate):
     def to_moment(self) -> float:
         """
         Converts the Julian date to an RD time moment.
+        RDM (3.3).
         :return: The RD time moment.
         """
         y = self.year + 1 if self.year < 0 else self.year
@@ -46,6 +47,7 @@ class JulianDate(AbstractDate):
     def from_moment(self, t: float):
         """
         Converts an RD time moment to a Julian date.
+        RDM (3.4).
         :param t: The RD time moment to convert.
         :return: None. The instance of JulianDate will be generated instead.
         RDM (3.4), p. 65.
@@ -68,7 +70,7 @@ class JulianDate(AbstractDate):
         self.day = int(t - JulianDate(self.year, self.month, 1).to_moment() + 1)
 
     # region String representation
-    def to_string(self, format: str = None) -> str:
+    def to_string(self, format_string: str = None) -> str:
         """
         Formatting options (format is case-insensitive):
         "iso": ISO format ('1996-02-25 JE')
@@ -76,7 +78,7 @@ class JulianDate(AbstractDate):
         "dmy": 'day-month-year' (25 February 1996 JE)
         Only English names of months and days of week are supported.
         """
-        match(format.lower()):
+        match(format_string.lower()):
             case "iso":
                 return f"{self.year}-{self.month}-{self.day}"
             case "ymd":

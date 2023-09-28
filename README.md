@@ -6,6 +6,8 @@ Reingold &amp; Dershowitz Calendrica ported to Python
 
 "Calendrical calculations" by Edward Reingold and Nachum Dershowitz (further: R&D), in its consequent editions (see **References**) present a perfect practical guide for the transformation of calendrical dates between different calendar szstems. However, only LISP, Java, and Mathematica implementations are contained, and I was unable to find a usable implementation in a language I need in my daily work (Python being one of them). So I decided to develop a port by myself.
 
+I have implemented the functionalilty enabling it to convert dates from a specific calendar to their *Rata Die* values and back again, so that conversion of dates between pairs of calendars be maximally possible. I did not, however, implement many of the further details of the calendars, such as religious holidays based upon them. 
+
 ## Scope
 
 This repository contains Python code files, unit tests, and test data for a Python implementation of mathematical formulas contained in R&D books, partially inspired by the original LISP code, as well as by the Java code (written by Robert C. NcNally).

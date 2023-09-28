@@ -22,7 +22,7 @@ class OldHinduLunarDate(AbstractDate):
 
     def __init__(self, year: int = 0, month: int = 0, is_leap_lunar_month: bool = False, day: int = 0):
         """
-        Initialization
+        Initialization.
         :param year: Old Hindu Solar year.
         :param month: Old Hindu Solar month
         :param day: Old Hindu Solar day.
@@ -36,15 +36,17 @@ class OldHinduLunarDate(AbstractDate):
         """
         Converts the Old Hindu Lunar date to an RD time moment.
         :return: The RD time moment.
-        RDM (??)
+        RDM (9.14).
         """
         mina = (12 * self.year - 1) * OldHinduSolarDate.ARYA_SOLAR_MONTH
-        lunar_new_year = OldHinduLunarDate.ARYA_LUNAR_MONTH * (tools.quotient(mina, OldHinduLunarDate.ARYA_LUNAR_MONTH) + 1)
+        lunar_new_year = OldHinduLunarDate.ARYA_LUNAR_MONTH * (
+                tools.quotient(mina, OldHinduLunarDate.ARYA_LUNAR_MONTH) + 1)
 
         result = OldHinduSolarDate.EPOCH + lunar_new_year
 
         if not self.is_leap_month and math.ceil((lunar_new_year - mina) /
-                                                (OldHinduSolarDate.ARYA_SOLAR_MONTH - OldHinduLunarDate.ARYA_LUNAR_MONTH)) <= self.month:
+                                                (
+                                                        OldHinduSolarDate.ARYA_SOLAR_MONTH - OldHinduLunarDate.ARYA_LUNAR_MONTH)) <= self.month:
             result += OldHinduLunarDate.ARYA_LUNAR_MONTH * self.month
         else:
             result += OldHinduLunarDate.ARYA_LUNAR_MONTH * (self.month - 1)
@@ -62,7 +64,7 @@ class OldHinduLunarDate(AbstractDate):
         Converts an RD time moment to an Old Hindu Lunar date.
         :param t: The RD time moment to convert.
         :return: None. The instance of OldHinduLunarDate will be generated instead.
-        RDM (??)
+        RDM (9.13).
         """
         sun = t - OldHinduSolarDate.EPOCH + 0.25
         new_moon = sun - tools.fmod(sun, OldHinduLunarDate.ARYA_LUNAR_MONTH)

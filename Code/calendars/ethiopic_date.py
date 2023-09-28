@@ -20,7 +20,7 @@ class EthiopicDate(AbstractDate):
 
     def __init__(self, year: int = 0, month: int = 0, day: int = 0):
         """
-        Initialization
+        Initialization.
         :param year: Ethiopic year.
         :param month: Ethiopic month
         :param day: Ethiopic day.
@@ -32,11 +32,20 @@ class EthiopicDate(AbstractDate):
     def to_moment(self) -> float:
          """
         Converts the Ethiopic date to an RD time moment.
+        RDM (4.6).
         :return: The RD time moment.
          """
          return EthiopicDate.EPOCH + CopticDate(self.year, self.month, self.day).to_moment() - CopticDate.EPOCH
 
     def from_moment(self, t: float):
+        """
+        Converts an RD time moment to an Ethiopic date.
+        RDM (4.7).
+        :param t: The RD time moment to convert.
+        :return: None. The instance of EthiopicDate is generated instead.
+        :param t:
+        :return:
+        """
         ethiopic = CopticDate()
         ethiopic.from_moment(t + CopticDate.EPOCH - EthiopicDate.EPOCH)
 

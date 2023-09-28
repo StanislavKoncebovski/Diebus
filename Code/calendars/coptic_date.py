@@ -22,30 +22,32 @@ MONTHS_COPTIC = ["Ⲑⲟⲟⲩⲧ",
                  "Ⲉⲡⲁⲅⲟⲙⲉⲛⲁⲓ"]
 
 MONTHS_TRANSLIT = ["Thout",
-                    "Paopi",
-                    "Hathor",
-                    "Koiak",
-                    "Tobi",
-                    "Meshir",
-                    "Paremhat",
-                    "Parmouti",
-                    "Pashons",
-                    "Paoni",
-                    "Epip",
-                    "Mesori",
-                    "Pi Kogi Enavot"]
+                   "Paopi",
+                   "Hathor",
+                   "Koiak",
+                   "Tobi",
+                   "Meshir",
+                   "Paremhat",
+                   "Parmouti",
+                   "Pashons",
+                   "Paoni",
+                   "Epip",
+                   "Mesori",
+                   "Pi Kogi Enavot"]
 
 # Sources: RDM p. 75.
 # Wolfgang Kosack. Lehrbuch des Koptischen. Akademische Druck- u. Verlagsanstalt, 1974. ISBN  978-3-201-00889-1.
 DAYS_OF_WEEK_COPTIC = ["Ⲧⲕⲩⲣⲓⲁⲕⲏ",
-                      "Ⲡⲉⲥⲛⲁⲩ",
-                      "Ⲡϣⲟⲙⲏ̄ⲧ",
-                      "Ⲡⲉϥⲧⲟⲟⲩ",
-                      "Ⲡϯⲟⲩ",
-                      "Ⲡⲥⲟⲟⲩ",
-                      "Ⲡⲥⲁⲃⲃⲁⲧⲟⲛ"]
+                       "Ⲡⲉⲥⲛⲁⲩ",
+                       "Ⲡϣⲟⲙⲏ̄ⲧ",
+                       "Ⲡⲉϥⲧⲟⲟⲩ",
+                       "Ⲡϯⲟⲩ",
+                       "Ⲡⲥⲟⲟⲩ",
+                       "Ⲡⲥⲁⲃⲃⲁⲧⲟⲛ"]
 
 DAYS_OF_WEEK_TRANSLIT = ["Tkyriakê", "Pesnau", "Pshoment", "Peftoou", "Ptiou", "Psoou", "Psabbaton"]
+
+
 # endregion
 
 @dataclass
@@ -61,6 +63,7 @@ class CopticDate(AbstractDate):
 
     EPOCH = tools.COPTIC_EPOCH
 
+    # region Initialization
     def __init__(self, year: int = 0, month: int = 0, day: int = 0):
         """
         Initialization
@@ -72,19 +75,24 @@ class CopticDate(AbstractDate):
         self.month = month
         self.day = day
 
+    # endregion
+
     def to_moment(self) -> float:
         """
         Converts the Coptic date to an RD time moment.
+        RDM (4.3).
         :return: The RD time moment.
         """
-        result = CopticDate.EPOCH - 1 + 365 * (self.year - 1) + math.floor(self.year / 4) + 30 * (self.month - 1) + self.day
+        result = CopticDate.EPOCH - 1 + 365 * (self.year - 1) + math.floor(self.year / 4) + \
+                 30 * (self.month - 1) + self.day
         return result
 
     def from_moment(self, t: float):
         """
         Converts an RD time moment to a Coptic date.
+        RDM (4.4).
         :param t: The RD time moment to convert.
-        :return: None. The instance of CopticDate will be generated instead.
+        :return: None. The instance of CopticDate is generated instead.
         """
         self.year = math.floor((4 * (t - CopticDate.EPOCH) + 1463) / 1461)
         self.month = int(math.floor((t - CopticDate(self.year, 1, 1).to_moment()) / 30)) + 1

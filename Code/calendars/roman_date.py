@@ -8,26 +8,27 @@ NONES = 2
 IDES = 3
 
 COUNT_NAMES = ["",
-		"pridie ",
-		"ante diem iii ",
-		"ante diem iv ",
-		"ante diem v ",
-		"ante diem vi ",
-		"ante diem vii ",
-		"ante diem viii ",
-		"ante diem ix ",
-		"ante diem x ",
-		"ante diem xi ",
-		"ante diem xii ",
-		"ante diem xiii ",
-		"ante diem xiv ",
-		"ante diem xv ",
-		"ante diem xvi ",
-		"ante diem xvii ",
-		"ante diem xviii ",
-		"ante diem xix "]
+               "pridie ",
+               "ante diem iii ",
+               "ante diem iv ",
+               "ante diem v ",
+               "ante diem vi ",
+               "ante diem vii ",
+               "ante diem viii ",
+               "ante diem ix ",
+               "ante diem x ",
+               "ante diem xi ",
+               "ante diem xii ",
+               "ante diem xiii ",
+               "ante diem xiv ",
+               "ante diem xv ",
+               "ante diem xvi ",
+               "ante diem xvii ",
+               "ante diem xviii ",
+               "ante diem xix "]
 
 EVENT_NAMES = ["Kalens", "Nones", "Ides"]
+
 
 @dataclass
 class RomanDate(AbstractDate):
@@ -42,19 +43,20 @@ class RomanDate(AbstractDate):
     # region Data Fields
     year: int
     month: int
-    event: int          # The next event (KALENDS / NONES / IDES)
-    count: int          # The inclusive count of days until the event
-    is_leap_day: bool   # The leap day indicator
+    event: int  # The next event (KALENDS / NONES / IDES)
+    count: int  # The inclusive count of days until the event
+    is_leap_day: bool  # The leap day indicator
+
     # endregion
 
     def __init__(self, year: int = 0, month: int = 0, event: int = 0, count: int = 0, is_leap_day: bool = False):
         """
-        Initialization
+        Initialization.
         :param year: The Julian year
         :param month: The Julian month
         :param event: The next event (KALENDS / NONES / IDES)
         :param count: The inclusive count of days until the event
-        :param is_leap_day: The leap day indicator
+        :param is_leap_day: The leap day indicator.
         """
         self.year = year
         self.month = month
@@ -79,7 +81,8 @@ class RomanDate(AbstractDate):
 
         result = approx - self.count
 
-        if tools.is_julian_leap_year(self.year) and self.month == 3 and self.event == KALENDS and (16 >= self.count >= 6):
+        if tools.is_julian_leap_year(self.year) and self.month == 3 and self.event == KALENDS and (
+                16 >= self.count >= 6):
             result += 0
         else:
             result += 1
@@ -93,7 +96,7 @@ class RomanDate(AbstractDate):
         """
         Converts an RD time moment to a Roman date.
         :param t: The RD time moment to convert.
-        :return: None. The instance of RomanDate will be generated instead.
+        :return: None. The instance of RomanDate is generated instead.
         RDM (3.11)
         """
         j = JulianDate()
@@ -154,14 +157,25 @@ class RomanDate(AbstractDate):
             self.count = 31 - d
             self.is_leap_day = (d == 25)
 
-    #region Protected Auxiliary
+    # region Protected Auxiliary
     def _ides_of_month(self, month: int):
+        """
+        Calculates the ides of a Roman month.
+        RDM (3.8).
+        :param month: The Roman month.
+        :return: The value of the ides.
+        """
         if month == 3 or month == 5 or month == 7 or month == 10:
             return 15
         else:
             return 13
 
-
     def _nones_of_month(self, month: int):
+        """
+        Calculates the nones of a Roman month.
+        RDM (3.9).
+        :param month: The Roman month.
+        :return: The value of the nones.
+        """
         return self._ides_of_month(month) - 8
     # endregion

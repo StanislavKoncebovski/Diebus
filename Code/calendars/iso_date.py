@@ -6,6 +6,9 @@ import tools
 
 
 class IsoDate:
+    """
+    Preliminary declaration.
+    """
     pass
 
 @dataclass
@@ -35,6 +38,7 @@ class IsoDate(AbstractDate):
     def to_moment(self) -> float:
         """
         Converts the ISO date to an RD time moment.
+        RDM (5.1).
         :return: The RD time moment.
         """
         return tools.n_th_k_day(self.week, 0, GregorianDate(self.year - 1, 12, 28).to_moment()) + self.day
@@ -42,6 +46,7 @@ class IsoDate(AbstractDate):
     def from_moment(self, t: float) -> None:
         """
         Converts an RD time moment to an ISO date.
+        RDM (5.2).
         :param t: The RD time moment to convert.
         :return: None. The instance of IsoDate will be generated instead.
         """

@@ -7,7 +7,7 @@ import tools
 @dataclass
 class ZoroastrianDate(AbstractDate):
     """
-    Implements conversion to and from RD time moment for Armenian calendar.
+    Implements conversion to and from RD time moment for Zoroastrian calendar.
     NB: There were no test data in RDM's calendrica.
     """
     # region Data Fields
@@ -41,7 +41,7 @@ class ZoroastrianDate(AbstractDate):
         """
         Converts an RD time moment to a Zoroastrian date.
         :param t: The RD time moment to convert.
-        :return: None. The instance of Zoroastrian will be generated instead.
+        :return: None. The instance of Zoroastrian is generated instead.
         RDM (1.41)
         """
         egyptian = EgyptianDate()

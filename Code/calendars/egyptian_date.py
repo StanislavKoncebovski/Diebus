@@ -18,6 +18,7 @@ class EgyptianDate(AbstractDate):
 
     EPOCH = tools.EGYPTIAN_EPOCH
 
+    # region Initialization
     def __init__(self, year: int = 0, month: int = 0, day: int = 0):
         """
         Initialization
@@ -28,6 +29,7 @@ class EgyptianDate(AbstractDate):
         self.year = year
         self.month = month
         self.day = day
+    # endregion
 
     def to_moment(self) -> float:
         """

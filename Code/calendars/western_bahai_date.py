@@ -4,8 +4,13 @@ from dataclasses import dataclass
 import math
 import tools
 
+
 class WesternBahaiDate:
+    """
+    Preliminary declaration.
+    """
     pass
+
 
 # region Module functions
 def from_bahai_year(bahai_year: int) -> (int, int, int):
@@ -32,6 +37,7 @@ def to_bahai_year(major, cycle, year_within_cycle) -> int:
     """
     return (major - 1) * 361 + (cycle - 1) * 19 + year_within_cycle
 
+
 def ayyam_i_ha(gregorian_year: int) -> (int, int):
     """
     Calculates the beginning and the end of Ayyam-i-Ha for a given Gregorian year as the numbers of days in the year
@@ -44,24 +50,27 @@ def ayyam_i_ha(gregorian_year: int) -> (int, int):
 
     return start, end
 
+
 # endregion
 
 # region Names
-MONTHS_ARABIC =  ["ايام الهاء", "بهاء", "جلال", "جمال", "عظمة", "نور", "رحمة", "كلمات", "كمال", "اسماء", "عزة",
-                  "مشية", "علم", "قدرة", "قول", "مسائل", "شرف", "سلطان", "ملك",  "علاء"]
+MONTHS_ARABIC = ["ايام الهاء", "بهاء", "جلال", "جمال", "عظمة", "نور", "رحمة", "كلمات", "كمال", "اسماء", "عزة",
+                 "مشية", "علم", "قدرة", "قول", "مسائل", "شرف", "سلطان", "ملك", "علاء"]
 
 MONTHS_TRANSLIT = ["Ayyam-i-Ha", "Baha'", "Jalal", "Jamal", "`Azamat", "Nur", "Rahmat", "Kalimat",
-                 "Kamal", "Asma'", "`Izzat", "Mashiyyat", "`Ilm", "Qudrat", "Qawl", "Masa'il",
-                 "Sharaf", "Sultan", "Mulk", "`Ala'"]
+                   "Kamal", "Asma'", "`Izzat", "Mashiyyat", "`Ilm", "Qudrat", "Qawl", "Masa'il",
+                   "Sharaf", "Sultan", "Mulk", "`Ala'"]
 
 DAYS_OF_WEEK_TRANSLIT = ["Jamal", "Kamal", "Fidal", "`Idal", "Istijlal", "Istiqlal", "Jalal"]
 DAYS_OF_WEEK_ARABIC = ["جلال", "جمال", "كمال", "فضال", "عدال", "استجلال", "استقلال"]
 
-YEARS_TRANSLIT = ["Alif", "Bá'", "Ab",  "Dál",  "Báb",	"Váv",	"Abad",	"Jád",	"Bahá",	"Hubb",	"Bahháj",
+YEARS_TRANSLIT = ["Alif", "Bá'", "Ab", "Dál", "Báb", "Váv", "Abad", "Jád", "Bahá", "Hubb", "Bahháj",
                   "Javáb", "Ahad", "Vahháb", "Vidád", "Badí'", "Bahí", "Abhá", "Váhid"]
 
 YEARS_ARABIC = ["أ", "ب", "أب", "د", "باب", "و", "أبد", "جاد", "بهاء", "حب", "بهاج", "جواب", "احد", "وﻫﺎب",
-                    "وداد", "بدیع", "بهي", "ابهى", "واحد"]
+                "وداد", "بدیع", "بهي", "ابهى", "واحد"]
+
+
 # endregion
 
 @dataclass
@@ -69,7 +78,6 @@ class WesternBahaiDate(AbstractDate):
     """
     Implements conversion to and from RD time moment for Western (historical) Bahai calendar.
     """
-
     # region Data Fields
     major: int
     cycle: int
@@ -78,7 +86,6 @@ class WesternBahaiDate(AbstractDate):
     day: int
     # endregion
 
-    # BAHAI_EPOCH = 673222.0
     MARCH = 3
 
     # region Initialization
@@ -103,13 +110,14 @@ class WesternBahaiDate(AbstractDate):
     def to_moment(self) -> float:
         """
         Converts the Western Bahai date to the RD time moment.
+        RDM (14.3).
         :return: The RD time moment.
         """
         gregorian_date_of_bahai_epoch = GregorianDate()
         gregorian_date_of_bahai_epoch.from_moment(tools.WESTERN_BAHAI_EPOCH)
         gregorian_year_of_bahai_epoch = gregorian_date_of_bahai_epoch.year
 
-        # RDM (15.3): g-year
+        # RDM (14.3): g-year
         gregorian_year = gregorian_year_of_bahai_epoch + 361 * (self.major - 1) + 19 * (self.cycle - 1) + self.year - 1
         t = GregorianDate(gregorian_year, WesternBahaiDate.MARCH, 20).to_moment()
 
@@ -130,6 +138,7 @@ class WesternBahaiDate(AbstractDate):
     def from_moment(self, t: float) -> None:
         """
         Converts an RD time moment to an instance of WesternBahaiDate.
+        RDM (14.4).
         :param t: The RD time moment to convert.
         :return: None. The instance of WesternBahaiDate will be generated instead.
         """
@@ -149,7 +158,6 @@ class WesternBahaiDate(AbstractDate):
         self.cycle = int(math.floor(years % 361 / 19) + 1)
         self.year = years % 19 + 1
 
-        # TODO: work here. to_moment is possibly wrong; for 1996-02-12 it gives days = 310 whereas it must be more.
         days = t - WesternBahaiDate(self.major, self.cycle, self.year, 1, 1).to_moment()
 
         start_ayyam_i_ha = WesternBahaiDate(self.major, self.cycle, self.year, 0, 1).to_moment()
@@ -162,7 +170,7 @@ class WesternBahaiDate(AbstractDate):
         elif start_ayyam_i_ha < t <= end_ayyam_i_ha:
             self.month = 0
         else:
-            self.month = days // 19 + 1
+            self.month = int(days) // 19 + 1
 
         self.day = int(t + 1 - WesternBahaiDate(self.major, self.cycle, self.year, self.month, 1).to_moment())
 
@@ -177,7 +185,7 @@ class WesternBahaiDate(AbstractDate):
         return to_bahai_year(self.major, self.cycle, self.year)
 
     # region String representation
-    def to_string(self, format: str = None) -> str:
+    def to_string(self, format_string: str = None) -> str:
         """
         Formatting options (format is case-sensitive):
         "ymd": (Bahá'í) 'year-month-day' (152-18-19 BE)
@@ -187,11 +195,12 @@ class WesternBahaiDate(AbstractDate):
             "dMy": 'day-month name-year' (19 Mulk 152 BE)
             "dmymj": 'day-month-year-major-cycle' (19 Mulk of year 19, 8-th Váhid of the 1st Kull-u-Shai)
         Support of Arabic names is postponed until a future version,
-        which should generate valid Arabic phrases instead of simple replacing the English names with the Arabic ones.
+        which should generate valid Arabic phrases with the meaning of a date instead of simple replacing of English
+        month and cycle names with the Arabic ones.
         """
         month_names = MONTHS_TRANSLIT
 
-        match(format):
+        match (format_string):
             case "ymd":
                 return f"{self.bahai_year}-{self.month}-{self.day} BE"
             case "dmy":
@@ -207,10 +216,9 @@ class WesternBahaiDate(AbstractDate):
             case "dmymj":
                 return self._to_dmymj()
 
-            # case "dmymjA":
-            #     return self._to_dmymj()
-            case _ :
+            case _:
                 return super().to_string()
+
     # endregion
 
     # region Protected Auxiliary
@@ -231,4 +239,3 @@ class WesternBahaiDate(AbstractDate):
 
         return result
     # endregion
-

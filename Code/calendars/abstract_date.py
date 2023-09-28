@@ -30,11 +30,11 @@ class AbstractDate:
         """
         pass
 
-    def to_string(self, format: str = None) -> str:
+    def to_string(self, format_string: str = None) -> str:
         """
         String representation.
         Differs from class to class, with some offering more formatting choices than the others.
-        :param format: String defining how to format the output string.
+        :param format_string: String defining how to format the output string.
         :return: Formatted string representation.
         """
         return self.__repr__()
