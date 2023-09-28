@@ -27,6 +27,10 @@ class TestWesternBahaiDate(unittest.TestCase):
             self.assertEqual(wbd.day, data[rd].day)
 
     def prepare_data(self):
+        """
+        Test data correspond to Sample Data in Appendix C of RDM (p. 396-400).
+        :return: Dictionary with the sample RD values as the keys and corresponding instances of WesternBahaiDate as values.
+        """
         file_name = "../data/western_bahai.csv"
         with open(file_name, "r") as file:
             lines = file.read().split()
@@ -41,7 +45,7 @@ class TestWesternBahaiDate(unittest.TestCase):
             month = int(cells[4])
             day = int(cells[5])
 
-            wesbah = WesternBahaiDate(major, cycle, year, month, day)
-            data[rd] = wesbah
+            bahai = WesternBahaiDate(major, cycle, year, month, day)
+            data[rd] = bahai
 
         return data

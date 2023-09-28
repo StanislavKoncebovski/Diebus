@@ -29,6 +29,10 @@ class TestEgyptianDate(unittest.TestCase):
             self.assertEqual(egyptian.day, data[rd].day)
 
     def prepare_data(self):
+        """
+        Test data correspond to Sample Data in Appendix C of RDM (p. 396-400).
+        :return: Dictionary with the sample RD values as the keys and corresponding instances of EgyptianDate as values.
+        """
         file_name = "../data/egyptian.csv"
         with open(file_name, "r") as file:
             lines = file.read().split()

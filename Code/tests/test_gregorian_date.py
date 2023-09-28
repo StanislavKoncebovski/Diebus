@@ -7,6 +7,7 @@ class TestGregorianDate(unittest.TestCase):
     """
     Tests for Gregorian dates.
     """
+
     def test_gregorian_date_to_moment(self):
         data = self.prepare_data()
 
@@ -15,7 +16,6 @@ class TestGregorianDate(unittest.TestCase):
 
             self.assertEqual(rd, t)
             print(rd, t)
-
 
     def test_moment_to_gregorian_date(self):
         data = self.prepare_data()
@@ -29,6 +29,10 @@ class TestGregorianDate(unittest.TestCase):
             self.assertEqual(greg.day, data[rd].day)
 
     def prepare_data(self):
+        """
+        Test data correspond to Sample Data in Appendix C of RDM (p. 396-400).
+        :return: Dictionary with the sample RD values as the keys and corresponding instances of GregorianDate as values.
+        """
         file_name = "../data/gregorian.csv"
         with open(file_name, "r") as file:
             lines = file.read().split()
@@ -42,7 +46,7 @@ class TestGregorianDate(unittest.TestCase):
             month = int(cells[2])
             day = int(cells[3])
 
-            greg = GregorianDate(year, month, day)
-            data[rd] = greg
+            gregorian = GregorianDate(year, month, day)
+            data[rd] = gregorian
 
         return data

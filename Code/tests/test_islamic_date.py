@@ -28,6 +28,10 @@ class TestCopticDate(unittest.TestCase):
             self.assertEqual(islamic.day, data[rd].day)
 
     def prepare_data(self):
+        """
+        Test data correspond to Sample Data in Appendix C of RDM (p. 396-400).
+        :return: Dictionary with the sample RD values as the keys and corresponding instances of IslamicDate as values.
+        """
         file_name = "../data/islamic.csv"
         with open(file_name, "r") as file:
             lines = file.read().split()

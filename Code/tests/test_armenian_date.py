@@ -7,6 +7,7 @@ class TestArmenianDate(unittest.TestCase):
     """
     Tests for Armenian dates.
     """
+
     def test_armenian_date_to_moment(self):
         data = self.prepare_data()
 
@@ -15,7 +16,6 @@ class TestArmenianDate(unittest.TestCase):
 
             self.assertEqual(rd, t)
             print(rd, t)
-
 
     def test_moment_to_armenian_date(self):
         data = self.prepare_data()
@@ -29,6 +29,10 @@ class TestArmenianDate(unittest.TestCase):
             self.assertEqual(armenian.day, data[rd].day)
 
     def prepare_data(self):
+        """
+        Test data correspond to Sample Data in Appendix C of RDM (p. 396-400).
+        :return: Dictionary with the sample RD values as the keys and corresponding instances of ArmenianDate as values.
+        """
         file_name = "../data/armenian.csv"
         with open(file_name, "r") as file:
             lines = file.read().split()

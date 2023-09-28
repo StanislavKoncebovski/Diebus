@@ -31,6 +31,10 @@ class TestRomanDate(unittest.TestCase):
             self.assertEqual(roman.is_leap_day, data[rd].is_leap_day)
 
     def prepare_data(self):
+        """
+        Test data correspond to Sample Data in Appendix C of RDM (p. 396-400).
+        :return: Dictionary with the sample RD values as the keys and corresponding instances of RomanDate as values.
+        """
         file_name = "../data/roman.csv"
         with open(file_name, "r") as file:
             lines = file.read().split()
