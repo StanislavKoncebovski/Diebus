@@ -75,11 +75,3 @@ class IsoDate(AbstractDate):
         return f"{self.year}-W{self.week:02}-{self.day}"
     # endregion
 
-if __name__ == '__main__':
-    t = 728714
-
-    id = IsoDate()
-    id.from_moment(t)
-
-    print(id)
-# expected: year = 1996, week =	8, day = 7
