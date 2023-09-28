@@ -91,6 +91,29 @@ def fmax(x: float, y: float) -> float:
 
 # endregion
 
+def gregorian_year_from_rata_die(t: float) -> float:
+    """
+    Calculates Gregorian year from a rata die value.
+    RDM (2.18).
+    :param t: The value of rata die.
+    :return: The Gregorian year.
+    """
+    d0 = t - 1
+    n400 = math.floor(d0 / 146097)
+    d1 = fmod(d0, 146097)
+    n100 = math.floor(d1 / 36524)
+    d2 = fmod(d1, 36524)
+    n4 = math.floor(d2 / 1461)
+    d3 = fmod(d2, 1461)
+    n1 = math.floor(d3 / 365)
+
+    year = 400.0 * n400 + 100.0 * n100 + 4.0 * n4 + n1
+
+    if int(n100) != 4 and int(n1) != 4:
+        year += 1
+
+    return year
+    
 # region Leap years
 def is_gregorian_leap_year(gregorian_year: int) -> bool:
     """

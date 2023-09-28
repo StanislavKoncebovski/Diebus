@@ -69,20 +69,8 @@ class GregorianDate(AbstractDate):
         :param t: The RD time moment to convert.
         :return: None. The instance of GregorianDate will be generated instead.
         """
-        d0 = t - 1
-        n400 = math.floor(d0 / 146097)
-        d1 = tools.fmod(d0, 146097)
-        n100 = math.floor(d1 / 36524)
-        d2 = tools.fmod(d1, 36524)
-        n4 = math.floor(d2 / 1461)
-        d3 = tools.fmod(d2, 1461)
-        n1 = math.floor(d3 / 365)
-
-        year = 400.0 * n400 + 100.0 * n100 + 4.0 * n4 + n1
+        year = tools.gregorian_year_from_rata_die(t)
         self.year = int(year)
-
-        if int(n100) != 4 and int(n1) != 4:
-            self.year += 1
 
         new_year = GregorianDate(self.year, 1, 1)
         days_prior = t - new_year.to_moment()
