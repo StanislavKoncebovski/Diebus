@@ -1,5 +1,9 @@
 import math
 
+# region Mathematical constants
+DEGREE = math.pi / 180
+# endregion
+
 # region EPOCHS for various calendars (RDM Table 1.2, p. 17).
 ARMENIAN_EPOCH = 201443
 BALINESE_EPOCH = -1721279
@@ -67,6 +71,33 @@ def amod(x: float, y: float) -> float:
     :return: The result of the operation.
     """
     return y + fmod(x, -y)
+
+
+def sind(x: float) -> float:
+    """
+    Sine of an argument given in degrees. (Neither math nor numpy seem to have these simple functions).
+    :param x: Tha argument in degrees.
+    :return: sin(x).
+    """
+    return math.sin(x * DEGREE)
+
+
+def cosd(x: float) -> float:
+    """
+    Cosine of an argument given in degrees.
+    :param x: Tha argument in degrees.
+    :return: cos(x).
+    """
+    return math.cos(x * DEGREE)
+
+
+def tand(x: float) -> float:
+    """
+    Tangens of an argument given in degrees.
+    :param x: Tha argument in degrees.
+    :return: tan(x).
+    """
+    return math.tan(x * DEGREE)
 
 
 # endregion

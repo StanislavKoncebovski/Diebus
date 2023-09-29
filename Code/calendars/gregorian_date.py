@@ -1,7 +1,9 @@
-from calendars.abstract_date import AbstractDate
-from dataclasses import dataclass
 import math
+from dataclasses import dataclass
+from typing import Optional
+
 import tools
+from calendars.abstract_date import AbstractDate
 
 
 class GregorianDate:
@@ -114,6 +116,42 @@ class GregorianDate(AbstractDate):
         :return:
         """
         return int(tools.day_of_week_from_moment(self.to_moment()))
+
+    @classmethod
+    def from_day_number(cls, day_number: int, year: int) -> Optional[GregorianDate]:
+        """
+        Calculates Gregorian date from the number of the day in the year.
+        :param day_number: The day's number.
+        :param year: The Gregorian year (only to determine if it is a leap one).
+        :return: The date, if the day number is valid, else None.
+        """
+        is_leap_year = tools.is_gregorian_leap_year(year)
+        number_of_days_in_year = 366 if is_leap_year else 365
+
+        if day_number < 1 or day_number > number_of_days_in_year:
+            return None
+
+        number_of_days_in_months = GregorianDate.DAYS_IN_MONTH
+
+        if is_leap_year:
+            number_of_days_in_months[1] += 1
+
+        cumulative = [number_of_days_in_months[0]]
+
+        for days in number_of_days_in_months[1:]:
+            cumulative.append(cumulative[-1] + days)
+
+        for days in cumulative:
+            if day_number <= days:
+                month = cumulative.index(days) + 1
+
+                if month == 1:
+                    day = day_number
+                else:
+                    day = day_number - cumulative[month - 2]
+
+                return GregorianDate(year, month, day)
+
 
     def day_of_year(self) -> int:
         """

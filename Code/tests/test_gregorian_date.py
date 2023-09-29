@@ -28,6 +28,14 @@ class TestGregorianDate(unittest.TestCase):
             self.assertEqual(greg.month, data[rd].month)
             self.assertEqual(greg.day, data[rd].day)
 
+    def test_gregorian_date_from_day_number(self):
+        gregorian_date = GregorianDate(2023, 1, 1)
+        day_number = gregorian_date.day_of_year()
+        print(day_number)
+
+        gregorian_date_from_number = GregorianDate.from_day_number(day_number, 2023)
+        print(gregorian_date_from_number)
+
     def prepare_data(self):
         """
         Test data correspond to Sample Data in Appendix C of RDM (p. 396-400).

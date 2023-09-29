@@ -1,17 +1,32 @@
+import math
+
 import tools
 from calendars.gregorian_date import GregorianDate
 from location import Location
 from numpy.polynomial.polynomial import Polynomial
+from tools import sind, cosd
+
+J2000 = 730120.5  # Noon on 2000-01-01 (Gregorian): RDU (14.18)
 
 # region Ephemeris constants
 EPHEMERIS_CORRECTION_1987 = [63.86, 0.3345, -0.060374, 0.0017275, 0.000651814, 0.00002373599]
 EPHEMERIS_CORRECTION_1900 = [-0.00002, 0.000297, 0.025184, -0.181133, 0.553040, -0.861938, 0.677066, -0.212591]
-EPHEMERIS_CORRECTION_1800 = [-0.000009, 0.003844, 0.083563, 0.865736, 4.867575, 15.845535, 31.332267, 38.291999, 28.316289, 11.636204, 2.043794]
+EPHEMERIS_CORRECTION_1800 = [-0.000009, 0.003844, 0.083563, 0.865736, 4.867575, 15.845535, 31.332267, 38.291999,
+                             28.316289, 11.636204, 2.043794]
 EPHEMERIS_CORRECTION_1700 = [8.118780842, -0.005092142, 0.003336121, -0.0000266484]
 EPHEMERIS_CORRECTION_1600 = [120, -0.9808, -0.01532, 0.000140272128]
 EPHEMERIS_CORRECTION_1000 = [1574.2, -556.01, 71.23472, 0.319781, -0.8503463, -0.005050998, 0.0083572073]
 EPHEMERIS_CORRECTION_0 = [10583.6, -1014.41, 33.78311, -5.952053, -0.1798452, 0.022174192, 0.00090316521]
+
 # endregion
+
+OBLIQUITY = [23.43929111111111, -0.013004167, -1.638e-07, 5.03611e-07]
+
+# Coefficients for solar longitude, anomaly, and eccentricity used to calculate equation of time, RDU (14.20)
+ET_LONGITUDE = [280.46645, 36000.76983, 0.0003032]
+ET_ANOMALY = [357.52910, 35999.05030, -0.0001559, -0.00000048]
+ET_ECCENTRICITY = [0.016708617, -0.000042037, -0.0000001236]
+
 
 # region Time conversions
 def local_to_universal(t_local: float, location: Location) -> float:
@@ -82,6 +97,8 @@ def standard_to_local(t_standard: float, location: Location) -> float:
     :return: The universal time.
     """
     return universal_to_local(standard_to_universal(t_standard, location), location)
+
+
 # endregion
 
 def ephemeris_correction(t: float) -> float:
@@ -89,7 +106,7 @@ def ephemeris_correction(t: float) -> float:
     "Astronomical calculations are done using Dynamical Time... Solar time units ... are not constant hrough time ...
     because of the retarding effects of tides and the atmosphere, which cause a relatively teady lengthening of the day.
     Because the accumulated discrepancy is not entirely predictable and is not accurately known ...
-    the following ad hoc function is used for the EPHEMERIS CORRECTION.
+    the following ad hoc function is used for the EPHEMERIS CORRECTION."
     RDU (14.15).
     :param t:
     :return:
@@ -133,3 +150,59 @@ def ephemeris_correction(t: float) -> float:
 
     else:
         return (-20 + 32 * y1820 * y1820) / 86400
+
+
+def universal_to_dynamic(t_dynamic: float) -> float:
+    """
+    RDM (12.13).
+    :param t_dynamic: The dynamic time.
+    :return: The dynamic time.
+    """
+    return t_dynamic + ephemeris_correction(t_dynamic)
+
+
+def dynamic_to_universal(t_universal: float) -> float:
+    """
+    RDM (12.14).
+    :param t_universal: The universal time (solar UTC).
+    :return: The universal time.
+    """
+    return t - ephemeris_correction(t_universal)
+
+
+def julian_centuries(t: float) -> float:
+    """
+    RDU (14.18).
+    """
+    return (universal_to_dynamic(t) - J2000) / 36525
+
+
+def obliquity(t: float) -> float:
+    """
+    RDM (12.23).
+    """
+    c = julian_centuries(t)
+    return Polynomial(OBLIQUITY)(c)
+
+
+def equation_of_time(t: float, eccentricity=None) -> float:
+    c = julian_centuries(t)
+
+    solar_longitude = Polynomial(ET_LONGITUDE)(c)  # degrees
+    anomaly = Polynomial(ET_ANOMALY)(c)  # degrees
+    eccentricity = Polynomial(ET_ECCENTRICITY)(c)
+    epsilon = obliquity(t)  # degrees
+    y = tools.tand(0.5 * epsilon) ** 2
+
+    et = y * sind(2 * solar_longitude) - 2.0 * eccentricity * sind(anomaly) + \
+         4 * eccentricity * y * sind(anomaly) * cosd(2 * solar_longitude) - 0.5 * y ** 2 * sind(4 * solar_longitude) - \
+         1.25 * eccentricity ** 2 * sind(2 * anomaly)
+
+    et /= (2 * math.pi)
+
+    return et
+
+if __name__ == '__main__':
+
+    for day in range(365):
+        t = GregorianDate()
