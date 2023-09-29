@@ -29,12 +29,16 @@ class TestGregorianDate(unittest.TestCase):
             self.assertEqual(greg.day, data[rd].day)
 
     def test_gregorian_date_from_day_number(self):
-        gregorian_date = GregorianDate(2023, 1, 1)
-        day_number = gregorian_date.day_of_year()
-        print(day_number)
+        data = self.prepare_data()
 
-        gregorian_date_from_number = GregorianDate.from_day_number(day_number, 2023)
-        print(gregorian_date_from_number)
+        for rd in data:
+            gregorian = data[rd]
+            day_number = gregorian.day_of_year()
+            gregorian_calculated = GregorianDate.from_day_number(day_number, gregorian.year)
+
+            self.assertEqual(gregorian.year, gregorian_calculated.year)
+            self.assertEqual(gregorian.month, gregorian_calculated.month)
+            self.assertEqual(gregorian.day, gregorian_calculated.day)
 
     def prepare_data(self):
         """
