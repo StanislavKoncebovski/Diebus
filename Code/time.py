@@ -204,5 +204,33 @@ def equation_of_time(t: float, eccentricity=None) -> float:
 
 if __name__ == '__main__':
 
-    for day in range(365):
-        t = GregorianDate()
+    year = 2023
+    ts = []
+    ets = []
+
+    for day in range(1, 366):
+        gregorian = GregorianDate.from_day_number(day, year)
+        t = gregorian.to_moment()
+        et = equation_of_time(t)
+        minutes = et * 24 * 60
+
+        ts.append(t)
+        ets.append(minutes)
+
+        # print(t, et, minutes)
+
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
+
+    fig, ax = plt.subplots(1, 1)
+
+    # ax.xaxis.set_major_locator(MultipleLocator(30.0))
+    # ax.xaxis.set_major_formatter('{x:.0f}')
+    # ax.xaxis.set_minor_locator(MultipleLocator(10))
+    #
+    # ax.yaxis.set_major_locator(MultipleLocator(2.0))
+    # ax.yaxis.set_major_formatter('{x:.0f}')
+    # ax.yaxis.set_minor_locator(MultipleLocator(0.5))
+
+    ax.plot(ts, ets, linewidth=2.0, label="observed", antialiased=True)
+    plt.show()

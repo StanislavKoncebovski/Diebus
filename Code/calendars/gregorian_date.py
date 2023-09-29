@@ -121,6 +121,8 @@ class GregorianDate(AbstractDate):
     def from_day_number(cls, day_number: int, year: int) -> Optional[GregorianDate]:
         """
         Calculates Gregorian date from the number of the day in the year.
+        TODO: can be slightly optimized: you do not need to calculate all cumulative values,
+        but only those that are smaller than day_number.
         :param day_number: The day's number.
         :param year: The Gregorian year (only to determine if it is a leap one).
         :return: The date, if the day number is valid, else None.
@@ -169,10 +171,10 @@ class GregorianDate(AbstractDate):
 
     def week_number(self) -> int:
         """
-        TODO: implement!
+        RDM (5.2)
         :return:
         """
-        pass
+        return math.floor((self.to_moment() - GregorianDate(self.year, 1, 1).to_moment()) / 7) + 1
 
     # region String representation
     def to_string(self, format_string: str = None) -> str:
