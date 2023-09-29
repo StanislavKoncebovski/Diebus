@@ -69,26 +69,6 @@ def amod(x: float, y: float) -> float:
     return y + fmod(x, -y)
 
 
-def max(i: int, j: int) -> int:
-    """
-    Maximum of two integers.
-    :param i: Integer # 1.
-    :param j: Integer # 2.
-    :return: Result: max(i, j)
-    """
-    return i if i >= j else j
-
-
-def fmax(x: float, y: float) -> float:
-    """
-    Maximum of two floats.
-    :param x: Float # 1.
-    :param y: Float # 2.
-    :return: Result: max(x, y)
-    """
-    return x if x >= y else y
-
-
 # endregion
 
 def gregorian_year_from_rata_die(t: float) -> float:
@@ -113,7 +93,8 @@ def gregorian_year_from_rata_die(t: float) -> float:
         year += 1
 
     return year
-    
+
+
 # region Leap years
 def is_gregorian_leap_year(gregorian_year: int) -> bool:
     """

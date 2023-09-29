@@ -1,5 +1,6 @@
 from calendars.abstract_date import AbstractDate
 from dataclasses import dataclass
+import numpy as np
 import tools
 
 PANCAWARA_I = [5, 9, 7, 4, 8]
@@ -148,7 +149,7 @@ class BalineseDate(AbstractDate):
         :return:
         """
         day = self._day_from_fixed(t)
-        return int(tools.fmod(tools.fmax(6, 4 + tools.fmod(day - 70, 210)), 8)) + 1
+        return int(tools.fmod(np.maximum(6, 4 + tools.fmod(day - 70, 210)), 8)) + 1
 
     def _sangawara_from_fixed(self, t) -> int:
         """
@@ -156,7 +157,7 @@ class BalineseDate(AbstractDate):
         :param t:
         :return:
         """
-        return int(tools.fmod(tools.fmax(0, self._day_from_fixed(t) - 3), 9)) + 1
+        return int(tools.fmod(np.maximum(0, self._day_from_fixed(t) - 3), 9)) + 1
 
     def _dasawara_from_fixed(self, t) -> int:
         """

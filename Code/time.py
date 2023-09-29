@@ -86,7 +86,11 @@ def standard_to_local(t_standard: float, location: Location) -> float:
 
 def ephemeris_correction(t: float) -> float:
     """
-
+    "Astronomical calculations are done using Dynamical Time... Solar time units ... are not constant hrough time ...
+    because of the retarding effects of tides and the atmosphere, which cause a relatively teady lengthening of the day.
+    Because the accumulated discrepancy is not entirely predictable and is not accurately known ...
+    the following ad hoc function is used for the EPHEMERIS CORRECTION.
+    RDU (14.15).
     :param t:
     :return:
     """
