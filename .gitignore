@@ -161,3 +161,4 @@ cython_debug/
 
 *.tdl
 *.toml
+playground.py
