@@ -51,7 +51,6 @@ class TestGregorianDate(unittest.TestCase):
 
         data = {}
         for line in lines[1:]:
-            # 708842,1941,9,29
             cells = line.split(',')
             rd = int(cells[0])
             year = int(cells[1])

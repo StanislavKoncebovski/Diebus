@@ -185,7 +185,7 @@ def obliquity(t: float) -> float:
     return Polynomial(OBLIQUITY)(c)
 
 
-def equation_of_time(t: float, eccentricity=None) -> float:
+def equation_of_time(t: float) -> float:
     c = julian_centuries(t)
 
     solar_longitude = Polynomial(ET_LONGITUDE)(c)  # degrees
@@ -207,10 +207,11 @@ if __name__ == '__main__':
     year = 2023
     ts = []
     ets = []
+    t0 = GregorianDate.from_day_number(1, year).to_moment()
 
     for day in range(1, 366):
         gregorian = GregorianDate.from_day_number(day, year)
-        t = gregorian.to_moment()
+        t = gregorian.to_moment() - t0
         et = equation_of_time(t)
         minutes = et * 24 * 60
 
@@ -224,13 +225,16 @@ if __name__ == '__main__':
 
     fig, ax = plt.subplots(1, 1)
 
-    # ax.xaxis.set_major_locator(MultipleLocator(30.0))
-    # ax.xaxis.set_major_formatter('{x:.0f}')
-    # ax.xaxis.set_minor_locator(MultipleLocator(10))
-    #
-    # ax.yaxis.set_major_locator(MultipleLocator(2.0))
-    # ax.yaxis.set_major_formatter('{x:.0f}')
-    # ax.yaxis.set_minor_locator(MultipleLocator(0.5))
+    ax.xaxis.set_major_locator(MultipleLocator(30.0))
+    ax.xaxis.set_major_formatter('{x:.0f}')
+    ax.xaxis.set_minor_locator(MultipleLocator(10))
+
+    ax.yaxis.set_major_locator(MultipleLocator(5.0))
+    ax.yaxis.set_major_formatter('{x:.0f}')
+    ax.yaxis.set_minor_locator(MultipleLocator(0.5))
+
+    plt.grid(visible=True, which='major', color='b', alpha = 0.25, linestyle='-', linewidth=0.75)
+    plt.grid(visible=True, which='minor', color='r', alpha = 0.15, linestyle='-', linewidth=0.5)
 
     ax.plot(ts, ets, linewidth=2.0, label="observed", antialiased=True)
     plt.show()
