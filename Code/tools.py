@@ -1,7 +1,13 @@
 import math
+from typing import Callable
+
+import numpy as np
 
 # region Mathematical constants
 DEGREE = math.pi / 180
+DEFAULT_BRACKETING_FACTOR = 0.6180339887498948482045868343656
+DEFAULT_MAX_ITERATIONS = 100
+DEFAULT_PRECISION = 1e-5
 # endregion
 
 # region EPOCHS for various calendars (RDM Table 1.2, p. 17).
@@ -98,6 +104,93 @@ def tand(x: float) -> float:
     :return: tan(x).
     """
     return math.tan(x * DEGREE)
+
+
+# endregion
+
+# region Root finding related
+def bisection(f: Callable, left: float, right: float, precision: float = DEFAULT_PRECISION,
+              max_iterations: int = DEFAULT_MAX_ITERATIONS) -> float:
+    """
+    Tries to find a root of an expression by bisection.
+    R&D use bisection, since it always converges and the precision does not need to be very high
+    (1s = 1/86400 or about 1e-5 is enough).
+    :param f: The function f(x) the zero point of which has to be found:: x: f(x) = 0.
+    :param left: The left boundary of the initial interval in which to search for the zero point.
+                 The values of the function must be of opposite signs at the interval's boundaries.
+    :param right: The right boundary of the initial interval in which to search for the zero point.
+    :param precision: The precision to reach. Default = 1e-5.
+    :param max_iterations: The number of iterations after which to abandon process. Default = 100.
+    :return: The value of the zero point.
+    :exception ValueError: Raised if the interval does not bracket a zero point.
+    """
+    f_left = f(left)
+    r_right = f(right)
+
+    if np.sign(f_left) == np.sign(r_right):
+        raise ValueError("Wrong initial interval: the values of the function are of the same sign")
+
+    middle = (left + right) / 2
+
+    iterations = 0
+
+    accuracy = math.fabs(f(middle))
+
+    while accuracy > precision and iterations < max_iterations:
+        f_middle = f(middle)
+
+        if np.sign(f_middle) == np.sign(f_left):
+            left = middle
+        else:
+            right = middle
+
+        middle = (left + right) / 2
+
+        accuracy = math.fabs(f(middle))
+        iterations += 1
+
+    return middle
+
+
+def bracket(f: Callable, left: float, right: float, factor: float = DEFAULT_BRACKETING_FACTOR,
+            max_iterations: int = DEFAULT_MAX_ITERATIONS) -> (float, float):
+    """
+    Tries to bracket an interval with respect to a function, i.e. if the initial interval is not a bracket itself,
+    it successively increases its boundaries before it reaches a bracketing interval.
+    :param f: The function f(x) that should be bracketed.
+    :param left: The initial left boundary of the interval to start bracketing from.
+    :param right: The initial right boundary of the interval to start bracketing from.
+    :param factor: The factor to expand the intervals' boundaries. Default = 0.618...
+    :param max_iterations: The number of iterations after which to abandon process. Default = 100.
+    :return: A bracketing interval, if successfull.
+    :exception StopIteration: Raised if no bracket was found after maxIterations.
+    """
+    left, right = np.minimum(left, right), np.maximum(left, right)
+
+    f_left = f(left)
+    r_right = f(right)
+
+    if np.sign(f_left) != np.sign(r_right):
+        return left, right
+
+    iterations = 0
+
+    while iterations <= max_iterations:
+        width = right - left
+
+        left -= factor * width
+        f_left = f(left)
+        if np.sign(f_left) != np.sign(r_right):
+            return left, right
+
+        right += factor * width
+        r_right = f(right)
+        if np.sign(f_left) != np.sign(r_right):
+            return left, right
+
+        iterations += 1
+
+    raise StopIteration("Maximum iterations reached. No bracket found")
 
 
 # endregion
