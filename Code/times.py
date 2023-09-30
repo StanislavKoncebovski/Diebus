@@ -26,7 +26,50 @@ OBLIQUITY = [23.43929111111111, -0.013004167, -1.638e-07, 5.03611e-07]
 ET_LONGITUDE = [280.46645, 36000.76983, 0.0003032]
 ET_ANOMALY = [357.52910, 35999.05030, -0.0001559, -0.00000048]
 ET_ECCENTRICITY = [0.016708617, -0.000042037, -0.0000001236]
+SIDEREAL = [280.46061837, 1308572.97170280125, 0.000387933, -2.5833118057349522087315939033841e-8]
 
+# region Constants to calculate solar longitude
+SOLAR_LONGITUDE_X = [
+    403406, 195207, 119433, 112392, 3891,
+    2819, 1721, 660, 350, 334,
+    314, 268, 242, 234, 158,
+    132, 129, 114, 99, 93,
+    86, 78, 72, 68, 64,
+    46, 38, 37, 32, 29,
+    28, 27, 27, 25, 24,
+    21, 21, 20, 18, 17,
+    14, 13, 13, 13, 12,
+    10, 10, 10, 10
+]
+
+SOLAR_LONGITUDE_Y = [
+    0.9287892, 35999.1376958, 35999.4089666, 35998.7287385, 71998.20261,
+    71998.4403, 36000.35726, 71997.4812, 32964.4678, -19.4410,
+    445267.1117, 45036.8840, 3.1008, 22518.4434, -19.9739,
+    65928.9345, 9038.0293, 3034.7684, 33718.148, 3034.448,
+    -2280.773, 29929.992, 31556.493, 149.588, 9037.750,
+    107997.405, -4444.176, 151.771, 67555.316, 31556.080,
+    -4561.540, 107996.706, 1221.655, 62894.167, 31437.369,
+    14578.298, -31931.757, 34777.243, 1221.999, 62894.511,
+    -4442.039, 107997.909, 119.066, 16859.071, -4.578,
+    26895.292, -39.127, 12297.536, 90073.778
+]
+
+SOLAR_LONGITUDE_Z = [
+    270.54861, 340.19128, 63.91854, 331.26220, 317.843,
+    86.631, 240.052, 310.26, 247.23, 260.87,
+    297.82, 343.14, 166.79, 81.53, 3.50,
+    132.75, 182.95, 162.03, 29.8, 266.4,
+    249.2, 157.6, 257.8, 185.1, 69.9,
+    8.0, 197.1, 250.4, 65.3, 162.7,
+    341.5, 291.6, 98.5, 146.7, 110.0,
+    5.2, 342.6, 230.9, 256.1, 45.3,
+    242.9, 115.2, 151.8, 285.3, 53.3,
+    126.6, 205.7, 85.9, 146.1
+]
+
+
+# endregion
 
 # region Time conversions
 def local_to_universal(t_local: float, location: Location) -> float:
@@ -202,6 +245,113 @@ def equation_of_time(t: float) -> float:
 
     return et
 
+
+def local_to_apparent(t_local: float) -> float:
+    """
+    Conversion of apparent time to local time.
+    RDM (12.18).
+    Apparent time is the time measured by a sundial (e.g. the moment of midday),
+    whereas local time is based on mean time (measured with a device, such as a mechanical clock or atom clock).
+    :param t_local: The local time, days.
+    :return: The apparent time, days.
+    """
+    return t_local + equation_of_time(t_local)
+
+
+def apparent_to_local(t_apparent: float) -> float:
+    """
+    Conversion of apparent  time to local time.
+    RDM (12.19).
+    RD: Slightly inaccurate: the argument in EquationOfTime() should be not t, but the local time instead.
+    :param t_apparent: The apparent time, days.
+    :return: The local time, days
+    """
+    return t_apparent - equation_of_time(t_apparent)
+
+
+def midnight(t_apparent: float, location: Location) -> float:
+    """
+    Calculates the true, or apparent middle of the night for a location.
+    SK: R&D give this and the next formula without an explanation what a midnight is, and I still do not understand how
+    you can know the time of a midnight only knowing an arbitrary moment of time.
+    RDM (2.20)
+    :param t_apparent:  Apparent time.
+    :param location: Location to find the midnight for.
+    :return: Local time of midnight.
+    """
+    return local_to_standard(apparent_to_local(t_apparent), location)
+
+
+def midday(t_apparent: float, location: Location) -> float:
+    """
+    Calculates the true, or apparent middle of the day (aka apparent noon) for a location.
+    RDM (2.21)
+    :param t_apparent: Apparent time.
+    :param location: Location to find the midday for.
+    :return: Local time of midday.
+    """
+    return local_to_standard(apparent_to_local(t_apparent + 0.5), location)
+
+
+def solar_to_sidereal(t: float) -> float:
+    """
+    Conversion of mean solar time to mean sidereal time.
+    RDM (12.22).
+    :param t: Mean solar time.
+    :return: Mean sidereal time, in degrees.
+    """
+    c = julian_centuries(t)
+
+    result = Polynomial(SIDEREAL)(c)
+
+    return tools.fmod(result, 360)
+
+
+def aberration(t: float) -> float:
+    """
+    Aberration, the effect of the sun’s moving about 20.47 seconds of arc during the 8 minutes
+    during which its light is en route to Earth.
+    RDM (12.27).
+    :param t: The time moment.
+    :return: The value of aberration, in degrees.
+    """
+    c = julian_centuries(t)
+    return 0.0000974 * math.cos(tools.DEGREE * (177.63 + 35999.01848 * c)) - 0.005575
+
+
+def nutation(t: float) -> float:
+    """
+    Nutation RDU (14.31), RDM (12.26): caused by the gravitational pull of the moon and sun on the unevenly
+    shaped Earth. Nutation causes slight changes in the celestial latitudes and longitudes of stars and planets.
+    :param t: The time moment.
+    :return: The value of nutation, degrees.
+    """
+    c = julian_centuries(t)
+    A = 124.90 + c * (-1934.134 + 0.002063 * c)
+    B = 201.11 + c * (72001.5377 + 0.00057 * c)
+
+    return -0.004778 * math.sin(A * tools.DEGREE) - 0.0003667 * math.sin(B * tools.DEGREE)
+
+
+def solar_longitude(t: float) -> float:
+    """
+    Calculates the longitude o the sun at a given astronomical time.
+    RDM (12.25).
+    :param t: Astronomical time given as an R.D.
+    :return: The value of solar longitude, in degrees.
+    """
+    c = julian_centuries(t)
+
+    s = 0.0
+
+    for i in range(len(SOLAR_LONGITUDE_X)):
+        s += SOLAR_LONGITUDE_X[i] * math.sin(tools.DEGREE * (SOLAR_LONGITUDE_Y[i] * c + SOLAR_LONGITUDE_Z[i]))
+
+    longitude = 282.7771834 + 36000.76953744 * c + 0.000005729577951308232 * s + aberration(t) + nutation(t)
+
+    return tools.fmod(longitude, 360)
+
+
 if __name__ == '__main__':
 
     year = 2023
@@ -233,8 +383,8 @@ if __name__ == '__main__':
     ax.yaxis.set_major_formatter('{x:.0f}')
     ax.yaxis.set_minor_locator(MultipleLocator(0.5))
 
-    plt.grid(visible=True, which='major', color='b', alpha = 0.25, linestyle='-', linewidth=0.75)
-    plt.grid(visible=True, which='minor', color='r', alpha = 0.15, linestyle='-', linewidth=0.5)
+    plt.grid(visible=True, which='major', color='b', alpha=0.25, linestyle='-', linewidth=0.75)
+    plt.grid(visible=True, which='minor', color='r', alpha=0.15, linestyle='-', linewidth=0.5)
 
     ax.plot(ts, ets, linewidth=2.0, label="observed", antialiased=True)
     plt.show()
