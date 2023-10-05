@@ -1,5 +1,7 @@
 import math
 
+import numpy as np
+
 import tools
 from calendars.gregorian_date import GregorianDate
 from location import Location
@@ -27,6 +29,8 @@ ET_LONGITUDE = [280.46645, 36000.76983, 0.0003032]
 ET_ANOMALY = [357.52910, 35999.05030, -0.0001559, -0.00000048]
 ET_ECCENTRICITY = [0.016708617, -0.000042037, -0.0000001236]
 SIDEREAL = [280.46061837, 1308572.97170280125, 0.000387933, -2.5833118057349522087315939033841e-8]
+
+MEAN_TROPICAL_YEAR = 365.242189
 
 # region Constants to calculate solar longitude
 SOLAR_LONGITUDE_X = [
@@ -350,6 +354,20 @@ def solar_longitude(t: float) -> float:
     longitude = 282.7771834 + 36000.76953744 * c + 0.000005729577951308232 * s + aberration(t) + nutation(t)
 
     return tools.fmod(longitude, 360)
+
+
+def estimate_prior_solar_longitude(t: float, solar_longitude_value: float) -> float:
+    """
+    Approximate moment of time at or before a given value of time when solar longitude just exceeded lambda degrees.
+    :param t: The given value of time before which we need the value of the taime with the given solar longitude.
+    :param solar_longitude_value: The value of solar longitude.
+    :return: The moment of time when the solar longitude is being reached.
+    """
+    rate = MEAN_TROPICAL_YEAR / 360
+    tau = t - rate * tools.fmod(solar_longitude(t) - solar_longitude_value, 360)
+    delta = tools.fmod(solar_longitude(tau) - solar_longitude_value + 180, 360) - 180
+
+    return np.minimum(t, tau - rate * delta)
 
 
 if __name__ == '__main__':
