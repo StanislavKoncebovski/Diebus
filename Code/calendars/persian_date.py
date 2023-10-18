@@ -37,11 +37,23 @@ class PersianDate(AbstractDate):
         :return: The RD time moment.
         RDM (13.5)
         """
-        year_factor = self.year - 1 if 0 < self.year else self.year
-        new_year = self._new_year_on_or_before(
-            PersianDate.EPOCH + 180 + math.floor(times.MEAN_TROPICAL_YEAR * year_factor))
-        month_factor_1 = 31 if self.month <= 7 else 30
-        return new_year - 1 + month_factor_1 * (self.month - 1) + 6 + self.day
+        if self.year > 0:
+            arg = times.MEAN_TROPICAL_YEAR * (self.year - 1)
+        else:
+            arg = times.MEAN_TROPICAL_YEAR * self.year
+
+        new_year = self._new_year_on_or_before(PersianDate.EPOCH + 180 + math.floor(arg))
+
+        result = new_year - 1
+
+        if self.month <= 7:
+            result += 31 * (self.month - 1)
+        else:
+            result += 30 * (month - 1) + 6
+
+        result += self.day
+
+        return result
 
     def from_moment(self, t: float):
         """
@@ -50,7 +62,17 @@ class PersianDate(AbstractDate):
         :return: None. The instance of PersianDate is generated instead.
         RDM (13.6)
         """
-        pass
+        new_year = self._new_year_on_or_before(t)
+        y = 1 + round((new_year - PersianDate.EPOCH) / times.MEAN_TROPICAL_YEAR)
+        self.year = int(y) if 0 < y else int(y) - 1
+        day_of_year = 1 + t - self._to_fixed(self.year, 1, 1)
+
+        if day_of_year < 186:
+            self.month = int(math.ceil(day_of_year / 31))
+        else:
+            self.month = int(math.ceil((day_of_year - 6) / 30))
+
+        self.day = int(t - self._to_fixed(self.year, self.month, 1) + 1)
 
     # region Protected Auxiliary
     def _new_year_on_or_before(self, rd: float) -> int:
@@ -75,6 +97,22 @@ class PersianDate(AbstractDate):
         :return: The Rate Die value of midday for that date in Tehran.
         """
         return times.standard_to_universal(times.midday(rd, location.TEHRAN), location.TEHRAN)
+
+    def _to_fixed(self, year: int, month: int, day: int) -> float:
+        year_factor = year - 1 if 0 < year else year
+        new_year = self._new_year_on_or_before(PersianDate.EPOCH + 180 + math.floor(times.MEAN_TROPICAL_YEAR * year_factor))
+
+        result = new_year - 1
+
+        if month <= 7:
+            result += 31 * (month - 1)
+        else:
+            result += 30 * (month - 1) + 6
+
+        result += day
+
+        return result
+
     # endregion
 
 
@@ -88,3 +126,8 @@ if __name__ == '__main__':
     t = persian.to_moment()
 
     print(t)
+
+    persian1 = PersianDate()
+    persian1.from_moment(t)
+
+    print(persian1)
