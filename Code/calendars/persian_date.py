@@ -1,4 +1,9 @@
+import math
 from dataclasses import dataclass
+
+import location
+import times
+import tools
 from calendars.abstract_date import AbstractDate
 
 @dataclass
@@ -11,6 +16,8 @@ class PersianDate(AbstractDate):
     month: int
     day: int
     # endregion
+
+    EPOCH = tools.PERSIAN_EPOCH
 
     def __init__(self, year: int = 0, month: int = 0, day: int = 0):
         """
@@ -29,8 +36,10 @@ class PersianDate(AbstractDate):
         :return: The RD time moment.
         RDM (13.5)
         """
-        pass
-
+        year_factor = self.year - 1  if 0 < self.year else self.year
+        new_year = self.new_year_on_or_before(PersianDate.EPOCH + 180 + math.floor(times.MEAN_TROPICAL_YEAR * year_factor))
+        month_factor_1 = 31 if self.month <= 7 else 30
+        return new_year - 1 + month_factor_1 * (self.month - 1) + 6 + self.day
 
     def from_moment(self, t: float):
         """
@@ -40,3 +49,40 @@ class PersianDate(AbstractDate):
         RDM (13.6)
         """
         pass
+
+    # region Protected Auxiliary
+    def new_year_on_or_before(self, date: float) -> int:
+        """
+        Fixed date of Astronomical Persian New Year on or before fixed date.
+        :param date: The fixed date (Rata Die).
+        :return: The Rata Die value for the Persian new Year on or before the date.
+        """
+        approx = times.estimate_prior_solar_longitude(self.midday_in_tehran(date), times.SPRING)
+
+        i = int(math.floor(approx)) -1
+
+        while not times.solar_longitude(self.midday_in_tehran(i)) <= times.SPRING + 2:
+            i += 1
+
+        return i
+
+
+    def midday_in_tehran(self, date: float) -> float:
+        """
+        Universal time of midday on fixed date in Tehran.
+        :param date: The Rate Die value of a date.
+        :return: The Rate Die value of midday for that date in Tehran.
+        """
+        return times.standard_to_universal(times.midday(date, location.TEHRAN), location.TEHRAN)
+    # endregion
+
+if __name__ == '__main__':
+    year = 1374
+    month = 12
+    day = 6
+
+    persian = PersianDate(year, month, day)
+
+    t = persian.to_moment()
+
+    print(t)

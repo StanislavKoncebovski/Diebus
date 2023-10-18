@@ -8,7 +8,11 @@ from location import Location
 from numpy.polynomial.polynomial import Polynomial
 from tools import sind, cosd
 
-J2000 = 730120.5  # Noon on 2000-01-01 (Gregorian): RDU (14.18)
+J2000 = 730120.5    # Noon on 2000-01-01 (Gregorian): RDU (14.18)
+SPRING = 0          # Longitude of sun at vernal equinox
+SUMMER = 90         # Longitude of sun at summer solstice
+AUTUMN = 180        # Longitude of sun at autumnal equinox
+WINTER = 270        # Longitude of sun at winter solstice
 
 # region Ephemeris constants
 EPHEMERIS_CORRECTION_1987 = [63.86, 0.3345, -0.060374, 0.0017275, 0.000651814, 0.00002373599]
