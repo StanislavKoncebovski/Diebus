@@ -7,9 +7,9 @@ class Location:
 
     """
     name: str
-    latitude: float
-    longitude: float
-    elevation: float
+    latitude: float     # Degrees
+    longitude: float    # Degrees
+    elevation: float    # m
     zone: float
 
     def __init__(self, name: str = "", latitude: float = 0, longitude: float = 0, elevation: float = 0,
