@@ -235,6 +235,10 @@ def obliquity(t: float) -> float:
     c = julian_centuries(t)
     return Polynomial(OBLIQUITY)(c)
 
+def declination(t: float, beta:float, lambda1: float):
+    epsilon = obliquity(t)
+    return math.asin(math.sin(beta) * math.cos(epsilon) + math.cos(beta) * math.sin(epsilon) * math.sin(lambda1))
+
 
 def equation_of_time(t: float) -> float:
     c = julian_centuries(t)

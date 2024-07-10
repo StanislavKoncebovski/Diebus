@@ -53,3 +53,4 @@ class BahaiDate(AbstractDate):
         :return: None. The instance of WesternBahaiDate will be generated instead.
         """
         ...
+
