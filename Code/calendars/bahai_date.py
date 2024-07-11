@@ -1,11 +1,18 @@
 from dataclasses import dataclass
 
+from astropy.units import Quantity
+
 from calendars.abstract_date import AbstractDate
-from location import Location
-from times import standard_to_universal
+from calendars.gregorian_date import GregorianDate
+from location import Location, TEHRAN
+from astroplan import Observer
+from astropy.time import Time
+
+from tools import to_julian_days, from_julian_days
+
 
 # Ultimate Edition (UE) (16.5)
-TEHRAN = Location("Tehran", 35.6966111, 51.423056, 0, 3.5)
+# TEHRAN = Location("Tehran", 35.6966111, 51.423056, 0, 3.5)
 
 @dataclass
 class BahaiDate(AbstractDate):
@@ -53,4 +60,44 @@ class BahaiDate(AbstractDate):
         :return: None. The instance of WesternBahaiDate will be generated instead.
         """
         ...
+
+    def bahai_sunset(self, t: float) -> float:
+        """
+        Calculates the RD moment of sunset in Tehran for the day indicated by the value of the RD datetime.
+        :param t: The moment of time to calculate the next sunset for.
+        :return: The RD value of the sunset in Tehran for the defined datetime (UTC).
+        """
+
+        # define the observer position
+        observer = Observer(name=TEHRAN.name, latitude=TEHRAN.latitude,
+                            longitude=TEHRAN.longitude, elevation=Quantity(0, 'm'))
+
+        # create an instance of astroplan.Time
+        jd = to_julian_days(t)
+        time = Time(str(jd), format='jd')
+        sunset = observer.sun_set_time(time, which="next")
+
+        utc = sunset.to_value('jd')
+
+
+if __name__ == '__main__':
+    gregorian = GregorianDate(2024, 7, 11)
+    t = gregorian.to_moment()
+    print(t)
+
+
+    bd = BahaiDate()
+    sunset = bd.bahai_sunset(t)
+    print(sunset)
+
+    # observer = Observer(name="Potsdam", latitude=52.406001,
+    #                     longitude=13.059181, elevation=Quantity(0, 'm'))
+    #
+    # jd = to_julian_days(t)
+    #
+    # time = Time(str(jd), format='jd')
+    # sunset = observer.sun_set_time(time, which="next")
+    #
+    # t_sunset = from_julian_days(sunset.tt)
+    # print(t_sunset)
 

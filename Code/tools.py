@@ -46,6 +46,7 @@ def quotient(x: float, y: float) -> float:
     """
     return math.floor(x / y)
 
+
 def fmod(x: float, y: float) -> float:
     """
     RDU (1.17): The The	remainder, or modulus, of decimal numbers.
@@ -66,7 +67,6 @@ def amod(x: float, y: float) -> float:
     :return: The result of the operation.
     """
     return y + fmod(x, -y)
-
 
 
 def gregorian_year_from_rata_die(t: float) -> float:
@@ -91,6 +91,8 @@ def gregorian_year_from_rata_die(t: float) -> float:
         year += 1
 
     return year
+
+
 # endregion
 
 # region Leap years
@@ -227,6 +229,24 @@ def datetime_data_to_moment(ymdhmsm: list[int]) -> float:
         rd += microsecond / (24 * 60 * 60 * 1000000)
 
     return rd
+
+
+def to_julian_days(t: float) -> float:
+    """
+    Converts RD to Julian days.
+    :param t: The time moment expressed as RD.
+    :return: The value of Julian days for the time moment.
+    """
+    return t - JULIAN_DAY_EPOCH
+
+
+def from_julian_days(jd: float) -> float:
+    """
+    Converts Julian days to RD.
+    :param jd: The value of Julian days for the time moment.
+    :return: The time moment expressed as RD.
+    """
+    return jd + JULIAN_DAY_EPOCH
 
 
 # endregion

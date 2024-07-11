@@ -24,7 +24,8 @@ class Location:
 URBANA = Location("Urbana", 40.11059, -88.20727, 222, -6)
 MECCA = Location("Mecca", 21.42664, 39.82563, 0, 2)
 JERUSALEM = Location("Jerusalem", 31.76904,	35.21633, 0, 2)
-TEHRAN = Location("Tehran", 35.69439, 51.42151, 1100, 3.5)
+# Elevation of Tehran is taken to be 0, as in RDU instead of 1100 which is nearer to truth.
+TEHRAN = Location("Tehran", 35.696111, 51.423056, 0, 3.5)
 HAIFA = Location("Haifa", 32.81841, 34.9885, 0, 2)
 
 if __name__ == '__main__':
