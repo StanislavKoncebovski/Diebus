@@ -2,6 +2,7 @@ import unittest
 
 from calendars.arithmetic_persian import ArithmeticPersianDate
 
+
 class TestArithmeticPersianDate(unittest.TestCase):
     """
     Tests for Arithmetic Persian dates.
