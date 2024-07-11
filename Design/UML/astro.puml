@@ -1,0 +1,11 @@
+@startuml
+skinparam DefaultFontName Consolas
+Class "Astro"
+{
+    solar_longitude(t: float): float
+    equatorial_solar_coordinates(t: float, location: Location): (float, float)
+    horizontal_solar_coordinates(t: float, location: Location): (float, float)
+    sunrise(t: float, location: Location) -> float
+    sunset(t: float, location: Location) -> float
+}
+@enduml
