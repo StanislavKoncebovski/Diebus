@@ -5,9 +5,12 @@ import numpy as np
 
 # region Mathematical constants
 DEGREE = math.pi / 180
+RADIAN = 180 / math.pi
 DEFAULT_BRACKETING_FACTOR = 0.6180339887498948482045868343656
 DEFAULT_MAX_ITERATIONS = 100
 DEFAULT_PRECISION = 1e-5
+
+EARTH_RADIUS = 6.372e6  # m
 # endregion
 
 # region EPOCHS for various calendars (RDM Table 1.2, p. 17).
@@ -248,7 +251,28 @@ def from_julian_days(jd: float) -> float:
     """
     return jd + JULIAN_DAY_EPOCH
 
+def to_hms(value: float) -> (int, int, float):
+    """
+    Converts an rd daytime value into an hour, minute, second form.
+    :param value: The RD value (must be < 1).
+    :return: Tuple (hour, minute, second)
+    """
+    hr = value * 24
+    hour = int(hr)
+    delta = hr - hour
+    mr = 60 * delta
+    minute = int(mr)
+    second = (mr - minute) * 60
 
+    return hour, minute, second
+
+def from_hms(hms: (int, int, float)) -> float:
+    """
+    Converts an HMS daytime value into an RD fraction.
+    :param hms: The HMS tuple.
+    :return: The RD fraction.
+    """
+    return (hms[0] + hms[1] / 60 + hms[2] / 3600) / 24
 # endregion
 
 # region String Representation Related
@@ -270,3 +294,13 @@ def ordinal_suffix(value: int) -> str:
 
     return suffix
 # endregion
+
+if __name__ == '__main__':
+    value = 0.6453573838807642
+    hms = to_hms(value)
+
+    print(hms)
+
+    v1 = from_hms(hms)
+
+    print(v1)
