@@ -1,5 +1,5 @@
 import math
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from astroplan import Observer
@@ -19,12 +19,14 @@ class Astro:
         """
         Calculates the sunset in a location on a defined date.
         Uses the Observer.sun_set_time() method of the Observer class of the astroplan library.
+        Advantages: ready-to-use, delivers usable values.
+        Disadvantages: slow, unclear what is in it.
         :param rd: The RD value of the date to calculate the sunset for.
         :param location: The location to calculate the sunset for.
         :return: The RD value of the sunset moment, if it exists, otherwise None.
         """
-        offset_timedelta = datetime.timedelta(hours=location.zone)
-        tzinfo = datetime.timezone(offset_timedelta)
+        offset_timedelta = timedelta(hours=location.zone)
+        tzinfo = timezone(offset_timedelta)
 
         # Convert Location to astroplan.Observer
         observer = Observer(name=location.name, latitude=location.latitude, longitude=location.longitude,
@@ -50,7 +52,7 @@ class Astro:
         # Convert to standard time of the location
         sunset_rd += location.zone / 24  # universal to standard
 
-        return rd
+        return sunset_rd
 
     @classmethod
     def horizon(cls, location: Location) -> float:
