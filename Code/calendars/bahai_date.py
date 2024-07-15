@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from astropy.units import Quantity
 
+from astro import Astro
 from calendars.abstract_date import AbstractDate
 from calendars.gregorian_date import GregorianDate
 from location import Location, TEHRAN
@@ -50,7 +51,7 @@ class BahaiDate(AbstractDate):
         RDM (14.3).
         :return: The RD time moment.
         """
-        ...
+        sunset_in_tehran = Astro.sunset()
 
     def from_moment(self, t: float) -> None:
         """
@@ -67,17 +68,17 @@ class BahaiDate(AbstractDate):
         :param t: The moment of time to calculate the next sunset for.
         :return: The RD value of the sunset in Tehran for the defined datetime (UTC).
         """
-
-        # define the observer position
-        observer = Observer(name=TEHRAN.name, latitude=TEHRAN.latitude,
-                            longitude=TEHRAN.longitude, elevation=Quantity(0, 'm'))
-
-        # create an instance of astroplan.Time
-        jd = to_julian_days(t)
-        time = Time(str(jd), format='jd')
-        sunset = observer.sun_set_time(time, which="next")
-
-        utc = sunset.to_value('jd')
+        # Calculate
+        # # define the observer position
+        # observer = Observer(name=TEHRAN.name, latitude=TEHRAN.latitude,
+        #                     longitude=TEHRAN.longitude, elevation=Quantity(0, 'm'))
+        #
+        # # create an instance of astroplan.Time
+        # jd = to_julian_days(t)
+        # time = Time(str(jd), format='jd')
+        # sunset = observer.sun_set_time(time, which="next")
+        #
+        # utc = sunset.to_value('jd')
 
 
 if __name__ == '__main__':
